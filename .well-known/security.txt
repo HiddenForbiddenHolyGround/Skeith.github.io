@@ -1,0 +1,5 @@
+Contact: mailto:Ske1th@proton.me
+Encryption: https://skeith.github.io/keys/skeith.pub
+Canonical: https://skeith.github.io/.well-known/security.txt
+Preferred-Languages: en
+Expires: 2026-06-06T00:00:00.000Z
