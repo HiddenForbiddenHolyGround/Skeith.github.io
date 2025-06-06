@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>skeith</title>
-  
+
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       background: #000000;
       color: #ffffff;
@@ -23,13 +23,13 @@
       min-height: 100vh;
       overflow-x: auto;
     }
-    
+
     .terminal {
       max-width: none;
       white-space: pre;
       animation: scanlines 0.1s linear infinite;
     }
-    
+
     .terminal::before {
       content: '';
       position: fixed;
@@ -47,60 +47,44 @@
       pointer-events: none;
       z-index: 1;
     }
-    
+
     .crt {
       position: relative;
       z-index: 2;
     }
-    
-    .prompt {
-      color: #ffffff;
-    }
-    
-    .output {
-      color: #cccccc;
-      margin-bottom: 1.2em;
-    }
-    
-    .highlight {
-      color: #ffffff;
-      font-weight: bold;
-    }
-    
-    .dim {
-      color: #666666;
-    }
-    
-    .sigil {
-      color: #aaaaaa;
-    }
-    
+
+    .prompt { color: #ffffff; }
+    .output { color: #cccccc; margin-bottom: 1.2em; }
+    .highlight { color: #ffffff; font-weight: bold; }
+    .dim { color: #666666; }
+    .sigil { color: #aaaaaa; }
+
     a {
       color: #ffffff;
       text-decoration: underline;
     }
-    
+
     a:hover {
       color: #cccccc;
       background: #333333;
     }
-    
+
     .cursor {
       background: #ffffff;
       color: #000000;
       animation: blink 1.2s infinite;
     }
-    
+
     @keyframes blink {
       0%, 40% { opacity: 1; }
       41%, 100% { opacity: 0; }
     }
-    
+
     @keyframes scanlines {
       0% { filter: brightness(1); }
       100% { filter: brightness(1.02); }
     }
-    
+
     body::after {
       content: '';
       position: fixed;
@@ -112,11 +96,17 @@
       pointer-events: none;
       z-index: 3;
     }
+
+    #verify-block {
+      display: none;
+      margin-top: 1em;
+    }
   </style>
 </head>
 <body>
   <div class="terminal">
-    <div class="crt">UNIX System V Release 4.0 (skeith)
+    <div class="crt">
+UNIX System V Release 4.0 (skeith)
 Copyright (c) 1984-1989 AT&T
 All Rights Reserved
 login: skeith
@@ -141,7 +131,7 @@ signal - Skeith.20
 discord - sk31_th
 
 for secure communications:
-gpg key fingerprint: <span class="highlight">7AF0 8720 B7E8 A75B 5BB8  FCB1 2A7C 7038 BBE8 ABC9</span>
+gpg key fingerprint: <span class="highlight">ABFC DB98 58D3 BCD7 A3C7 1547 7FE9 9862 AD7B BC84</span>
 
 $ ls -la /dev/repos/
 total 24
@@ -156,7 +146,26 @@ Name:   skeith
 State:  R (running)
 Uptime: 1337 days
 Status: available for work
-$ <span class="cursor">█</span></div>
+
+<div id="verify-block">
+$ cat /home/skeith/verify.html<br>
+for verification:<br>
+- <a href="/index.html.asc">index.html.asc (signature)</a><br>
+- <a href="/keys/skeith.pub">skeith.pub (public key)</a><br>
+verify with:<br>
+<code>gpg --verify index.html.asc index.html</code><br>
+</div>
+
+$ <span class="cursor">█</span>
+    </div>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      setTimeout(() => {
+        document.getElementById("verify-block").style.display = "block";
+      }, 3000);
+    });
+  </script>
 </body>
 </html>
