@@ -2,37 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="color-scheme" content="light dark">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="skeith">
   <meta name="robots" content="noindex, nofollow">
-  
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="Referrer-Policy" content="no-referrer">
-  
   <title>skeith</title>
   
   <style>
-    :root {
-      --bg: #0a0a0a;
-      --text: #666;
-      --accent: #333;
-      --ghost: #1a1a1a;
-      --fade: #444;
-    }
-    
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f8f8f8;
-        --text: #888;
-        --accent: #ddd;
-        --ghost: #f0f0f0;
-        --fade: #aaa;
-      }
-    }
-    
     * {
       margin: 0;
       padding: 0;
@@ -40,356 +14,149 @@
     }
     
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: #000000;
+      color: #ffffff;
       font-family: 'Courier New', monospace;
-      line-height: 1.4;
+      font-size: 16px;
+      line-height: 1.3;
+      padding: 40px;
       min-height: 100vh;
-      padding: 2rem;
-      font-size: 0.9rem;
+      overflow-x: auto;
     }
     
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
+    .terminal {
+      max-width: none;
+      white-space: pre;
+      animation: scanlines 0.1s linear infinite;
     }
     
-    .header {
-      text-align: center;
-      margin-bottom: 3rem;
-      opacity: 0.7;
+    .terminal::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.02) 2px,
+        rgba(255,255,255,0.02) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .crt {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .prompt {
+      color: #ffffff;
+    }
+    
+    .output {
+      color: #cccccc;
+      margin-bottom: 1.2em;
+    }
+    
+    .highlight {
+      color: #ffffff;
+      font-weight: bold;
+    }
+    
+    .dim {
+      color: #666666;
     }
     
     .sigil {
-      font-size: 0.8rem;
-      margin-bottom: 0.5rem;
-      color: var(--fade);
-      letter-spacing: 2px;
+      color: #aaaaaa;
     }
     
-    .identity {
-      font-size: 1.1rem;
-      margin-bottom: 0.3rem;
+    a {
+      color: #ffffff;
+      text-decoration: underline;
     }
     
-    .status {
-      font-size: 0.7rem;
-      opacity: 0.5;
-      letter-spacing: 1px;
+    a:hover {
+      color: #cccccc;
+      background: #333333;
     }
     
-    .pulse {
-      display: inline-block;
-      width: 4px;
-      height: 4px;
-      background: var(--fade);
-      border-radius: 50%;
-      margin-right: 0.5rem;
-      animation: fade 3s infinite;
+    .cursor {
+      background: #ffffff;
+      color: #000000;
+      animation: blink 1.2s infinite;
     }
     
-    @keyframes fade {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 1; }
+    @keyframes blink {
+      0%, 40% { opacity: 1; }
+      41%, 100% { opacity: 0; }
     }
     
-    .main {
-      margin-bottom: 3rem;
+    @keyframes scanlines {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.02); }
     }
     
-    .fragment {
-      margin-bottom: 2rem;
-      padding: 1rem 0;
-      border-left: 1px solid var(--accent);
-      padding-left: 1.5rem;
-      opacity: 0.8;
-    }
-    
-    .fragment:hover {
-      opacity: 1;
-      border-left-color: var(--fade);
-    }
-    
-    .trace {
-      font-size: 0.8rem;
-      margin-bottom: 0.5rem;
-      color: var(--fade);
-    }
-    
-    .essence {
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
-    
-    .hidden-text {
-      opacity: 0.3;
-      transition: opacity 0.3s;
-    }
-    
-    .hidden-text:hover {
-      opacity: 0.8;
-    }
-    
-    .coordinates {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin: 3rem 0;
-    }
-    
-    .coord-block {
-      background: var(--ghost);
-      padding: 1rem;
-      border: 1px solid var(--accent);
-      font-size: 0.8rem;
-    }
-    
-    .coord-label {
-      color: var(--fade);
-      margin-bottom: 0.5rem;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    .coord-value {
-      font-family: monospace;
-      word-break: break-all;
-      opacity: 0.6;
-    }
-    
-    .contact-matrix {
-      margin: 3rem 0;
-    }
-    
-    .contact-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid var(--accent);
-      font-size: 0.8rem;
-      opacity: 0.6;
-    }
-    
-    .contact-row:hover {
-      opacity: 1;
-      background: var(--ghost);
-    }
-    
-    .contact-key {
-      color: var(--fade);
-    }
-    
-    .contact-value a {
-      color: var(--text);
-      text-decoration: none;
-    }
-    
-    .repositories {
-      margin: 3rem 0;
-      font-size: 0.8rem;
-    }
-    
-    .repo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    
-    .repo-cell {
-      background: var(--ghost);
-      padding: 0.8rem;
-      border: 1px solid var(--accent);
-      text-align: center;
-      opacity: 0.6;
-      transition: all 0.3s;
-    }
-    
-    .repo-cell:hover {
-      opacity: 1;
-      border-color: var(--fade);
-    }
-    
-    .repo-cell a {
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.7rem;
-    }
-    
-    .repo-label {
-      display: block;
-      margin-bottom: 0.3rem;
-      color: var(--fade);
-      font-size: 0.6rem;
-      text-transform: uppercase;
-    }
-    
-    .footer {
-      text-align: center;
-      margin-top: 4rem;
-      opacity: 0.3;
-      font-size: 0.7rem;
-    }
-    
-    .timestamp {
-      margin-top: 0.5rem;
-      font-size: 0.6rem;
-    }
-    
-    @media (max-width: 600px) {
-      body { padding: 1rem; }
-      .coordinates { grid-template-columns: 1fr; gap: 1rem; }
-      .repo-grid { grid-template-columns: 1fr; }
-    }
-    
-    .glitch {
-      position: relative;
-    }
-    
-    .glitch::before {
-      content: attr(data-text);
-      position: absolute;
+    body::after {
+      content: '';
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      animation: glitch 8s infinite;
-    }
-    
-    @keyframes glitch {
-      0%, 90%, 100% { opacity: 0; }
-      95% { opacity: 0.3; transform: translateX(1px); }
-    }
-    
-    .decrypt {
-      cursor: pointer;
-      user-select: none;
-    }
-    
-    .encrypted {
-      font-family: monospace;
-      letter-spacing: 1px;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.3) 100%);
+      pointer-events: none;
+      z-index: 3;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <div class="sigil">⋈─◊─⋈</div>
-      <div class="identity glitch" data-text="skeith">skeith</div>
-      <div class="status"><span class="pulse"></span>ghost.in.machine</div>
-    </header>
+  <div class="terminal">
+    <div class="crt">UNIX System V Release 4.0 (skeith)
+Copyright (c) 1984-1989 AT&T
+All Rights Reserved
+login: skeith
+Password: 
+Last login: Fri Jan  1 00:00:00 1970
+$ whoami
+Skeith
+$ cat /home/skeith/about.txt
 
-    <main class="main">
-      <div class="fragment">
-        <div class="trace">// trace.01</div>
-        <div class="essence">
-          automation. data. broken systems.<br>
-          <span class="hidden-text">emergent patterns in digital soil.</span>
-        </div>
-      </div>
+hi, i'm Skeith.
 
-      <div class="fragment">
-        <div class="trace">// trace.02</div>
-        <div class="essence">
-          infrastructure for <span class="decrypt" onclick="decrypt(this)">████████</span><br>
-          <span class="hidden-text">when centralized dies, distributed thrives.</span>
-        </div>
-      </div>
+currently <span class="highlight">available for new projects</span>.
 
-      <div class="fragment">
-        <div class="trace">// trace.03</div>
-        <div class="essence">
-          pseudonymous by design.<br>
-          <span class="hidden-text">identity is boundary, not brand.</span>
-        </div>
-      </div>
+all opinions are my own.
 
-      <div class="coordinates">
-        <div class="coord-block">
-          <div class="coord-label">pgp.fingerprint</div>
-          <div class="coord-value">7AF0 8720 B7E8 A75B<br>5BB8 FCB1 2A7C 7038<br>BBE8 ABC9</div>
-        </div>
-        <div class="coord-block">
-          <div class="coord-label">keyoxide.proof</div>
-          <div class="coord-value"><a href="https://keyoxide.org/aspe:keyoxide.org:TMXBYQQORXSRVSNYDPMPDMVJIM" target="_blank">identity.chain</a></div>
-        </div>
-      </div>
-    </main>
+$ cat /home/skeith/contact.txt
 
-    <section class="contact-matrix">
-      <div class="contact-row">
-        <span class="contact-key">mail</span>
-        <span class="contact-value"><a href="mailto:Ske1th@proton.me">Ske1th@proton.me</a></span>
-      </div>
-      <div class="contact-row">
-        <span class="contact-key">signal</span>
-        <span class="contact-value">@skeith</span>
-      </div>
-      <div class="contact-row">
-        <span class="contact-key">discord</span>
-        <span class="contact-value">skeith#1995</span>
-      </div>
-    </section>
+you may contact me via:
 
-    <section class="repositories">
-      <div class="repo-grid">
-        <div class="repo-cell">
-          <span class="repo-label">github</span>
-          <a href="https://github.com/skeithcore" target="_blank">skeithcore</a>
-        </div>
-        <div class="repo-cell">
-          <span class="repo-label">codeberg</span>
-          <a href="https://codeberg.org/skeith" target="_blank">skeith</a>
-        </div>
-        <div class="repo-cell">
-          <span class="repo-label">git.gay</span>
-          <a href="https://git.gay/skeith" target="_blank">skeith</a>
-        </div>
-      </div>
-    </section>
+email - <a href="mailto:Ske1th@proton.me">Ske1th@proton.me</a> (preferred)
+signal - Skeith.20
+discord - sk31_th
 
-    <footer class="footer">
-      <div class="sigil">◊─⋈─◊</div>
-      <div class="timestamp" id="timestamp"></div>
-    </footer>
+for secure communications:
+gpg key fingerprint: <span class="highlight">7AF0 8720 B7E8 A75B 5BB8  FCB1 2A7C 7038 BBE8 ABC9</span>
+
+$ ls -la /dev/repos/
+total 24
+drwxr-xr-x  2 skeith users   512 Jan  1  1970 .
+drwxr-xr-x  8 skeith users  1024 Jan  1  1970 ..
+lrwxrwxrwx  1 skeith users    42 Jan  1  1970 <a href="https://github.com/HiddenForbiddenHolyGround">github</a>
+lrwxrwxrwx  1 skeith users    36 Jan  1  1970 <a href="https://codeberg.org/Skeith">codeberg</a>
+lrwxrwxrwx  1 skeith users    24 Jan  1  1970 <a href="https://git.gay/skeith">git.gay</a>
+
+$ cat /proc/status
+Name:   skeith
+State:  R (running)
+Uptime: 1337 days
+Status: available for work
+$ <span class="cursor">█</span></div>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Timestamp
-      const now = new Date();
-      document.getElementById('timestamp').textContent = 
-        now.toISOString().split('T')[0] + '.' + 
-        String(now.getHours()).padStart(2, '0') + 
-        String(now.getMinutes()).padStart(2, '0');
-      
-      // Decrypt effect
-      window.decrypt = function(element) {
-        const words = ['collapse', 'what.next', 'the.void', 'emergence'];
-        const word = words[Math.floor(Math.random() * words.length)];
-        element.textContent = word;
-        element.style.opacity = '0.8';
-        setTimeout(() => {
-          element.innerHTML = '████████';
-          element.style.opacity = '0.3';
-        }, 2000);
-      };
-      
-      // Ghost interactions
-      let clickCount = 0;
-      document.querySelector('.identity').addEventListener('click', function() {
-        clickCount++;
-        if (clickCount === 3) {
-          document.body.style.filter = 'invert(1)';
-          setTimeout(() => {
-            document.body.style.filter = 'none';
-          }, 100);
-        }
-      });
-    });
-  </script>
 </body>
 </html>
