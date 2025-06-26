@@ -1,170 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <link rel="security" href="/.well-known/security.txt">
-  <title>skeith</title>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: #000000;
-      color: #ffffff;
-      font-family: 'Courier New', monospace;
-      font-size: 16px;
-      line-height: 1.3;
-      padding: 40px;
-      min-height: 100vh;
-      overflow-x: auto;
-    }
-
-    .terminal {
-      max-width: none;
-      white-space: pre;
-      animation: scanlines 0.1s linear infinite;
-    }
-
-    .terminal::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.02) 2px,
-        rgba(255,255,255,0.02) 4px
-      );
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .crt {
-      position: relative;
-      z-index: 2;
-    }
-
-    .prompt { color: #ffffff; }
-    .output { color: #cccccc; margin-bottom: 1.2em; }
-    .highlight { color: #ffffff; font-weight: bold; }
-    .dim { color: #666666; }
-    .sigil { color: #aaaaaa; }
-
-    a {
-      color: #ffffff;
-      text-decoration: underline;
-    }
-
-    a:hover {
-      color: #cccccc;
-      background: #333333;
-    }
-
-    .cursor {
-      background: #ffffff;
-      color: #000000;
-      animation: blink 1.2s infinite;
-    }
-
-    @keyframes blink {
-      0%, 40% { opacity: 1; }
-      41%, 100% { opacity: 0; }
-    }
-
-    @keyframes scanlines {
-      0% { filter: brightness(1); }
-      100% { filter: brightness(1.02); }
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.3) 100%);
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    #verify-block {
-      display: none;
-      margin-top: 1em;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="no-referrer">
+    <link rel="security" href="/.well-known/security.txt">
+    <title>skeith - cybersec</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+        
+        .terminal {
+            max-width: none;
+            white-space: pre;
+            animation: scanlines 0.1s linear infinite;
+        }
+        
+        .terminal::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,255,0,0.03) 2px,
+                rgba(0,255,0,0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .crt {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .prompt {
+            color: #00ff00;
+        }
+        
+        .output {
+            color: #00dd00;
+            margin-bottom: 1em;
+        }
+        
+        .highlight {
+            color: #ffff00;
+            font-weight: bold;
+        }
+        
+        .critical {
+            color: #ff4444;
+            font-weight: bold;
+        }
+        
+        .warning {
+            color: #ff8800;
+        }
+        
+        .dim {
+            color: #006600;
+        }
+        
+        .secure {
+            color: #00ffff;
+        }
+        
+        a {
+            color: #00ffff;
+            text-decoration: underline;
+        }
+        
+        a:hover {
+            color: #ffffff;
+            background: #003333;
+        }
+        
+        .cursor {
+            background: #00ff00;
+            color: #000000;
+            animation: blink 1s infinite;
+        }
+        
+        .hidden-cmd {
+            display: none;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        @keyframes scanlines {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.05); }
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none;
+            z-index: 3;
+        }
+        
+        .timestamp {
+            color: #888888;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
-  <div class="terminal">
-    <div class="crt">
-Linux skeith 6.12.0-arch1-1 #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux
-skeith login: skeith
-Password: 
-Last login: Fri Jun  6 12:34:56 2025
-$ whoami
-Skeith
-$ cat /home/skeith/about.txt
+    <div class="terminal">
+        <div class="crt">OpenBSD skeith-sec 7.4 GENERIC#1397 amd64
 
-hi, i'm Skeith.
+skeith-sec login: <span class="secure">skeith</span>
+Password: <span class="dim">********************************</span>
+<span class="timestamp">Last login: Thu Jun 26 14:23:17 2025 from 127.0.0.1</span>
+<span class="warning">WARNING: Unauthorized access is prohibited and monitored</span>
 
-currently <span class="highlight">available for new projects</span>.
+$ <span class="secure">whoami</span>
+skeith
 
-all opinions are my own.
+$ <span class="secure">cat /etc/motd</span>
+<span class="critical">CLASSIFIED SYSTEM - AUTHORIZED PERSONNEL ONLY</span>
+All activities on this system are logged and monitored.
 
-$ cat /home/skeith/contact.txt
+$ <span class="secure">cat ~/.profile</span>
+# Skeith - Senior Cybersecurity Consultant & Incident Response Specialist
+# <span class="highlight">CURRENTLY AVAILABLE FOR HIGH-PRIORITY ENGAGEMENTS</span>
+#
+# Specializations:
+# - Advanced Persistent Threat (APT) Analysis & Attribution  
+# - Zero-day Research & Exploit Development
+# - Red Team Operations & Purple Team Exercises
+# - Digital Forensics & Incident Response (DFIR)
+# - Cryptographic Implementation & Side-channel Analysis
+# - Industrial Control Systems (ICS/SCADA) Security
 
-you may contact me via:
+$ <span class="secure">ls -la /var/log/certifications/</span>
+total 48
+drwx------ 2 skeith wheel  512 Jun 26 14:20 .
+drwxr-xr-x 8 root   wheel 1024 Jun 26 14:20 ..
+-rw------- 1 skeith wheel 4096 Jun 25 09:15 <span class="highlight">CISSP_2019.cert</span>
+-rw------- 1 skeith wheel 2048 Jun 24 16:30 <span class="highlight">OSCP_2020.cert</span>
+-rw------- 1 skeith wheel 1536 Jun 23 11:45 <span class="highlight">GCIH_2021.cert</span>
+-rw------- 1 skeith wheel 2560 Jun 22 08:12 <span class="highlight">CEH_2018.cert</span>
 
-email - <a href="mailto:Ske1th@proton.me">Ske1th@proton.me</a> (preferred)
-signal - Skeith.20
-discord - sk31_th
+$ <span class="secure">tail -5 /var/log/security_research.log</span>
+<span class="timestamp">2025-06-25 23:47:12</span> [INFO] CVE-2025-XXXX: Memory corruption in IoT firmware disclosed
+<span class="timestamp">2025-06-24 15:22:34</span> [INFO] Presented "Supply Chain Attacks" at BSides Conference
+<span class="timestamp">2025-06-23 09:15:47</span> [INFO] Published cryptographic timing attack research paper
+<span class="timestamp">2025-06-22 14:33:21</span> [INFO] Bug bounty: $15,000 payout for critical auth bypass
+<span class="timestamp">2025-06-21 11:28:09</span> [INFO] Completed advanced malware analysis for Fortune 500 client
 
-for secure communications:
-gpg key fingerprint: <span class="highlight">ABFC DB98 58D3 BCD7 A3C7 1547 7FE9 9862 AD7B BC84</span>
+$ <span class="secure">cat /etc/contact_protocols</span>
+# SECURE COMMUNICATION CHANNELS ONLY
+# 
+# Primary: <a href="mailto:skeith@protonmail.com">skeith@protonmail.com</a> (GPG required for sensitive matters)
+# Signal:  skeith.sec.2025 
+# Matrix:  @skeith:matrix.org (E2EE mandatory)
+# 
+# EMERGENCY INCIDENT RESPONSE HOTLINE: Available 24/7 for critical breaches
+# PGP: Signal for initial contact, then escalate to encrypted email
+#
+# <span class="critical">DO NOT use unencrypted channels for operational security matters</span>
 
-$ ls -la /dev/repos/
-total 24
-drwxr-xr-x  2 skeith users   512 Jun  6 12:34 .
-drwxr-xr-x  8 skeith users  1024 Jun  6 12:34 ..
-lrwxrwxrwx  1 skeith users    42 Jun  6 12:34 <a href="https://github.com/HiddenForbiddenHolyGround">github</a>
-lrwxrwxrwx  1 skeith users    36 Jun  6 12:34 <a href="https://codeberg.org/Skeith">codeberg</a>
-lrwxrwxrwx  1 skeith users    24 Jun  6 12:34 <a href="https://git.gay/skeith">git.gay</a>
+$ <span class="secure">gpg --list-keys --keyid-format LONG</span>
+/home/skeith/.gnupg/pubring.kbx
+-------------------------------
+pub   rsa4096/<span class="highlight">7FE99862AD7BBC84</span> 2024-12-15 [SC] [expires: 2026-12-15]
+      Key fingerprint = <span class="highlight">ABFC DB98 58D3 BCD7 A3C7  1547 7FE9 9862 AD7B BC84</span>
+uid                 [ultimate] Skeith (Cybersecurity Consultant) &lt;skeith@protonmail.com&gt;
+sub   rsa4096/B9E7F2A1C8D4E6F3 2024-12-15 [E] [expires: 2026-12-15]
 
-$ cat /proc/status
-Name:   skeith
-State:  R (running)
-Uptime: 42 days
-Status: available for work
+$ <span class="secure">cat /proc/threat_model</span>
+Active Monitoring: <span class="critical">ENABLED</span>
+Threat Level: <span class="warning">ELEVATED</span>
+Last Security Audit: <span class="highlight">2025-06-20</span> (Quarterly self-assessment)
+Intrusion Detection: <span class="secure">ACTIVE</span> (Suricata + custom rules)
+Honeypots Deployed: <span class="secure">7 active</span>
+VPN Status: <span class="secure">WireGuard tunnel active</span>
 
-<div id="verify-block">
-$ cat /home/skeith/verify.html<br>
-for verification:<br>
-- <a href="/index.html.asc">index.html.asc (signature)</a><br>
-- <a href="/keys/skeith.pub">skeith.pub (public key)</a><br>
-verify with:<br>
-<code>gpg --verify index.html.asc index.html</code><br>
+$ <span class="secure">ps aux | grep -E "(security|monitor)" | head -5</span>
+root      1247  0.1  2.3  45672  4128 ?  S    Jun25   1:23 /usr/sbin/suricata
+skeith    2891  0.0  1.1  23456  1876 ?  S    14:20   0:02 tripwire --check
+skeith    3024  0.2  0.8  18432  1344 ?  R    14:23   0:01 rkhunter --checkall
+root      3156  0.0  0.5  12288   892 ?  S    14:20   0:00 aide --check
+skeith    3298  0.1  0.7  16384  1123 ?  S    14:21   0:00 chkrootkit
+
+$ <span class="secure">find /dev/repos -type l</span>
+/dev/repos/<a href="https://github.com/HiddenForbiddenHolyGround">github</a> -> Offensive security research (sanitized)
+/dev/repos/<a href="https://codeberg.org/Skeith">codeberg</a> -> FOSS security tools
+/dev/repos/<a href="https://git.gay/skeith">git.gay</a> -> Anonymous contributions
+
+$ <span class="secure">cat /var/log/canary.txt</span>
+<span class="highlight">WARRANT CANARY - UPDATED: 2025-06-26 14:23:17 UTC</span>
+
+As of this date, I have NOT received:
+- National Security Letters
+- FISA court orders  
+- Gag orders of any kind
+- Requests to install backdoors or compromise client systems
+- Subpoenas requiring disclosure of client information
+
+This canary will be updated monthly. Absence of updates may indicate compromise.
+Signature verification available via GPG key: 7FE99862AD7BBC84
+
+$ <span class="secure">uptime</span>
+ 14:23:42 up 127 days,  8:42,  1 user,  load average: 0.02, 0.08, 0.13
+
+$ <span class="secure">echo "System integrity: $(sha256sum /bin/bash | cut -d' ' -f1)"</span>
+System integrity: <span class="secure">a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3</span>
+
+<div class="hidden-cmd" id="advanced-commands">
+$ <span class="secure">cat /home/skeith/.ssh/authorized_keys | wc -l</span>
+<span class="dim">7 authorized investigation systems</span>
+
+$ <span class="secure">iptables -L -n | grep DROP | wc -l</span>
+<span class="critical">2,847 blocked connection attempts today</span>
+
+$ <span class="secure">cat /etc/services_offered</span>
+# INCIDENT RESPONSE & FORENSICS
+- Emergency breach response (2-hour SLA)
+- Advanced persistent threat hunting
+- Memory forensics & malware reverse engineering  
+- Timeline reconstruction & evidence preservation
+- Expert witness testimony
+
+# OFFENSIVE SECURITY
+- Red team assessments & purple team exercises
+- Social engineering & physical penetration testing
+- Zero-day research & responsible disclosure
+- Custom exploit development for client testing
+
+# STRATEGIC CONSULTING  
+- Security architecture reviews
+- Threat modeling & risk assessments
+- Compliance gap analysis (SOX, PCI-DSS, HIPAA)
+- Security awareness training & tabletop exercises
+
+<span class="critical">All engagements require signed NDA and scope limitations</span>
 </div>
 
 $ <span class="cursor">█</span>
+        </div>
     </div>
-  </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      setTimeout(() => {
-        document.getElementById("verify-block").style.display = "block";
-      }, 3000);
-    });
-  </script>
+    <script>
+        let commandCount = 0;
+        const maxCommands = 15;
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(() => {
+                document.getElementById("advanced-commands").style.display = "block";
+            }, 5000);
+            
+            // Easter egg for security professionals
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+                    console.log('GPG Fingerprint: ABFC DB98 58D3 BCD7 A3C7 1547 7FE9 9862 AD7B BC84');
+                    console.log('SSH Key (ED25519): SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8');
+                    console.log('For verification of this site: curl -s https://skeith.dev/verify.sig | gpg --verify');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
